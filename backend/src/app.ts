@@ -13,7 +13,8 @@ app.register(fastifyCors, {
 })
 
 app.register(fastifyJwt, {
-    secret: process.env.JWT_SECRET as string
+    secret: process.env.JWT_SECRET as string,
+    sign: { expiresIn: "10m" },
 })
 
 app.register(userRoutes, {prefix: '/users'})
