@@ -2,6 +2,7 @@ import {fastify} from 'fastify'
 import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import {userRoutes} from '@/http/controllers/users/routes'
+import {passwordRoutes} from '@/http/controllers/passwords/routes'
 import { ZodError } from "zod";
 import 'dotenv/config'
 
@@ -18,6 +19,7 @@ app.register(fastifyJwt, {
 })
 
 app.register(userRoutes, {prefix: '/users'})
+app.register(passwordRoutes, {prefix: '/passwords'})
 
 app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {
