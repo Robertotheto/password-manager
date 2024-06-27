@@ -1,5 +1,6 @@
 import {useForm, SubmitHandler} from 'react-hook-form'
 import {useAuth} from '../hooks/useAuth'
+import {Lock} from 'lucide-react'
 
 interface IFormInput {
     email: string;
@@ -10,8 +11,10 @@ export  function SignIn(){
     const {register, handleSubmit} = useForm<IFormInput>();
     const onSubmit: SubmitHandler<IFormInput> = data => signIn(data);
     return (
-        <form className='min-h-screen w-full flex flex-col items-center justify-center' onSubmit={handleSubmit(onSubmit)}>
-            <h1>Login</h1>
+        <div className='min-h-screen w-full flex flex-col items-center justify-center'>
+            <Lock size={100} />
+            <h1 className='text-5xl my-2 font-bold'>Login</h1>
+        <form className='flex flex-col items-center justify-center' onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col mb-4'>
                 <label className='text-left mb-1' htmlFor="email">Email</label>
                 <input
@@ -39,5 +42,6 @@ export  function SignIn(){
                 Enviar
             </button>
         </form>
+        </div>
     )
 }

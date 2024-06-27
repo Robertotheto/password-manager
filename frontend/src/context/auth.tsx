@@ -1,4 +1,5 @@
-import { createContext, useEffect,ReactNode } from "react";
+import { createContext, useEffect,ReactNode, useState } from "react";
+import {useNavigate} from 'react-router-dom'
 import {api} from '../lib/axios'
 
 interface createUser {
@@ -15,6 +16,7 @@ export interface AuthContextData {
   signup: (data: createUser) => void;
   signIn: (data: login) => void;
   getUser: () => void;
+  isAuth: boolean;
 }
 
 interface AuthProviderProps {
@@ -25,6 +27,9 @@ export const AuthContext = createContext<AuthContextData | undefined>({} as Auth
 
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -33,14 +38,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   async function signup({name,email,password}: createUser) {
-    const response = await api.post('/users', {name,email,password});
-    console.log(response.data);
+    try {
+      const response = await api.post('/users/create', { name, email, password });
+      if (response.status === 201) {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Error during signup:', error);
+    }
+    
   }
 
   async function signIn({email,password}: login) {
     const response = await api.post('/users/login', {email,password});
     const { token } = response.data;
     localStorage.setItem('token', token);
+    setIsAuth(true);
   }
   async function getUser() {
     const response = await api.get('/users',{headers: {authorization: `Bearer ${localStorage.getItem('token')}`}});
@@ -51,7 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ getUser,signup, signIn }}>
+    <AuthContext.Provider value={{isAuth, getUser,signup, signIn }}>
       {children}
     </AuthContext.Provider>
   );
