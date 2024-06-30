@@ -20,6 +20,9 @@ app.register(fastifyJwt, {
 
 app.register(userRoutes, {prefix: '/users'})
 app.register(passwordRoutes, {prefix: '/passwords'})
+app.get("/", (request, reply) => {
+    return reply.send({"Hello World"})
+})
 
 app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {
